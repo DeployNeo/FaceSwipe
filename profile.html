@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FaceSwipe — Profile</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <style>
+    /* small visual niceties */
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <header class="bg-white shadow p-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2s4 3 4 7-2.5 6-4 7c-1.5-1-4-3.5-4-7 0-4 4-7 4-7z" fill="#7c3aed"/>
+      </svg>
+      <h1 class="text-lg font-semibold">FaceSwipe</h1>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <a href="feed.html" class="text-sm text-slate-600 hover:underline">Feed</a>
+
+      <button id="notifBell" class="relative">
+        <!-- bell svg -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-slate-600"><path d="M15 17H9v-6a3 3 0 0 1 6 0v6z" fill="currentColor" /></svg>
+        <span id="notifBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">0</span>
+      </button>
+
+      <button id="logoutBtn" class="bg-red-500 text-white px-3 py-1 rounded">Logout</button>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-2xl shadow">
+    <h2 class="text-xl font-bold mb-4">Your profile</h2>
+
+    <div class="flex flex-col md:flex-row gap-6 items-center">
+      <div class="flex flex-col items-center gap-3">
+        <img id="avatarPreview" src="assets/default-avatar.png" alt="avatar" class="w-32 h-32 rounded-full object-cover border-4 border-purple-500"/>
+        <input id="avatarInput" type="file" accept="image/*" class="hidden"/>
+        <div class="flex gap-2">
+          <button id="chooseAvatarBtn" class="px-4 py-2 bg-purple-600 text-white rounded">Choose</button>
+          <button id="removeAvatarBtn" class="px-4 py-2 border rounded">Remove</button>
+        </div>
+      </div>
+
+      <div class="flex-1 space-y-3">
+        <label class="block text-sm font-medium">Username</label>
+        <input id="profileUsername" type="text" class="w-full border px-3 py-2 rounded" placeholder="Your display name">
+
+        <label class="block text-sm font-medium">Gender</label>
+        <select id="profileGender" class="w-full border px-3 py-2 rounded">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+
+        <label class="block text-sm font-medium">Bio</label>
+        <textarea id="profileBio" rows="4" class="w-full border px-3 py-2 rounded" placeholder="Write something about yourself..."></textarea>
+
+        <div class="flex gap-3">
+          <button id="saveProfileBtn" class="px-5 py-2 bg-green-600 text-white rounded font-semibold">Save</button>
+          <button id="goFeedBtn" class="px-5 py-2 border rounded">Go to Feed</button>
+        </div>
+        <p id="profileStatus" class="text-sm text-slate-500"></p>
+      </div>
+    </div>
+
+    <section class="mt-6">
+      <h3 class="font-semibold mb-2">Recent likes</h3>
+      <ul id="recentLikesList" class="space-y-2 text-sm text-slate-700"></ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

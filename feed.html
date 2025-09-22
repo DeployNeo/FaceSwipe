@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FaceSwipe — Feed</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="firebase-config.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <header class="bg-white shadow p-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2s4 3 4 7-2.5 6-4 7c-1.5-1-4-3.5-4-7 0-4 4-7 4-7z" fill="#7c3aed"/></svg>
+      <h1 class="font-semibold">FaceSwipe Feed</h1>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <a href="profile.html" class="text-sm text-slate-600 hover:underline">Profile</a>
+      <button id="logoutBtn" class="bg-red-500 text-white px-3 py-1 rounded">Logout</button>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto mt-8">
+    <div id="feedArea" class="relative h-[520px] grid place-items-center">
+      <!-- Cards are inserted here -->
+      <div id="emptyState" class="text-center text-slate-500 hidden">
+        No profiles to show right now. Check back later ❤️
+      </div>
+    </div>
+
+    <!-- bottom controls -->
+    <div class="flex justify-center gap-4 mt-6">
+      <button id="dislikeBtn" class="px-6 py-3 bg-slate-200 rounded-full">Skip</button>
+      <button id="likeBtn" class="px-6 py-3 bg-pink-600 text-white rounded-full">Like ❤️</button>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

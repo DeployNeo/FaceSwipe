@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FaceSwipe — Login / Signup</title>
+
+  <!-- Tailwind from CDN (no build step) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Firebase (v8 CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+  <!-- App config -->
+  <script src="firebase-config.js"></script>
+
+  <style>
+    /* Small custom styles for nice scrollbars & transitions */
+    .fade { transition: all .25s ease; }
+    .no-scroll { overflow: hidden; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-700 to-pink-600 min-h-screen flex items-center justify-center p-6">
+
+  <div class="w-full max-w-3xl bg-white/90 backdrop-blur rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+    <!-- LEFT: Branding -->
+    <div class="p-8 md:p-10 bg-gradient-to-b from-purple-900 to-pink-700 text-white flex flex-col justify-between">
+      <div>
+        <div class="flex items-center gap-3">
+          <!-- Inline flame icon SVG -->
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" class="drop-shadow">
+            <path d="M12 2s-1.5 2.5-1.5 4.5C10.5 9 12 10 12 10s1.5-1 1.5-3.5S12 2 12 2z" fill="currentColor" opacity="0.95"/>
+            <path d="M12 2s4 3 4 7c0 3.5-2.5 6-4 7-1.5-1-4-3.5-4-7 0-4 4-7 4-7z" fill="currentColor"/>
+          </svg>
+          <h1 class="text-3xl font-extrabold tracking-tight">FaceSwipe</h1>
+        </div>
+        <p class="mt-4 text-slate-100/80">A simple, fast way to share your photo and get likes from the other gender. Built with Firebase and vanilla JS.</p>
+      </div>
+
+      <div class="text-xs text-slate-200/70">
+        <p>Designed for demonstration. Host the frontend on GitHub Pages and use Firebase services (Auth, Firestore, Storage).</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: Forms -->
+    <div class="p-8 md:p-10">
+      <div class="max-w-md mx-auto">
+        <div class="flex gap-2 items-center justify-between mb-6">
+          <h2 id="formTitle" class="text-2xl font-bold text-slate-900">Login</h2>
+          <div class="text-sm text-slate-600">New? <button id="toggleToSignup" class="text-purple-600 font-semibold underline">Create account</button></div>
+        </div>
+
+        <div id="errorBox" class="hidden mb-4 p-3 rounded bg-red-50 text-red-700 text-sm"></div>
+
+        <!-- LOGIN -->
+        <form id="loginForm" class="space-y-4">
+          <input id="loginEmail" type="email" placeholder="Email" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300"/>
+          <input id="loginPassword" type="password" placeholder="Password" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300"/>
+          <div class="flex justify-between items-center text-sm">
+            <label class="flex items-center gap-2"><input id="rememberMe" type="checkbox" class="h-4 w-4"> Remember me</label>
+            <button id="toReset" type="button" class="text-purple-600 hover:underline">Forgot?</button>
+          </div>
+          <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">Login</button>
+        </form>
+
+        <!-- SIGNUP -->
+        <form id="signupForm" class="space-y-4 hidden">
+          <input id="signupUsername" type="text" placeholder="Username" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"/>
+          <select id="signupGender" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300">
+            <option value="" disabled selected>Select gender</option>
+            <option value="male">Male ♂</option>
+            <option value="female">Female ♀</option>
+            <option value="other">Other ⚧</option>
+          </select>
+          <input id="signupEmail" type="email" placeholder="Email" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"/>
+          <input id="signupPassword" type="password" placeholder="Password (min 6 chars)" required minlength="6" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"/>
+          <div class="text-xs text-slate-500">By creating an account you agree to our demo Terms.</div>
+          <button type="submit" class="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition">Create Account</button>
+          <div class="text-center text-sm text-slate-500">Already have an account? <button id="backToLogin" class="text-purple-600 underline">Login</button></div>
+        </form>
+
+        <!-- RESET -->
+        <form id="resetForm" class="space-y-4 hidden">
+          <p class="text-sm text-slate-600">Enter your account email and we'll send a reset link.</p>
+          <input id="resetEmail" type="email" placeholder="Email" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-300"/>
+          <button type="submit" class="w-full bg-slate-600 text-white py-3 rounded-lg font-semibold hover:bg-slate-700 transition">Send Reset Link</button>
+          <div class="text-center text-sm text-slate-500"><button id="cancelReset" class="text-purple-600 underline">Cancel</button></div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Main app logic -->
+  <script src="app.js"></script>
+  <script>
+    // small helper to keep index page responsive to auth state:
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // if logged in, send to feed (but allow them to finish profile)
+        window.location.href = "feed.html";
+      }
+    });
+  </script>
+</body>
+</html>
